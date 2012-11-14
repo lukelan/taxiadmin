@@ -7,6 +7,7 @@
 
 var exp = require('express');
 var app = exp.createServer();
+var mongo = require('mongodb');
 
 app.root = __dirname;
 global.host = 'localhost';

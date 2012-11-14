@@ -10,8 +10,34 @@ var dbName = 'login-testing';
 // use moment.js for pretty date-stamping //
 var moment = require('moment');
 
+var generate_mongo_url = function(obj){
+    obj.hostname = (obj.hostname || 'localhost');
+    obj.port = (obj.port || 27017);
+    obj.db = (obj.db || 'test');
+    if(obj.username && obj.password){
+    	console.log("mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db);
+        return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+    }else{
+    	console.log("mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db);
+        return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+    }
+}
+var mongourl = generate_mongo_url(mongo);
+
 var AM = {}; 
-	AM.db = new Db(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}, {}));
+	//AM.db = new Db(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}, {}));
+	var db;
+	require('mongodb').connect(mongourl, function(err, conn){
+		if (err) {
+			console.log(e);
+		}	else{
+			console.log('connected to database :: ' + mongourl);
+			db = conn;
+			AM.accounts = db.collection('accounts');
+		}
+		
+	});
+	/*
 	AM.db.open(function(e, d){
 		if (e) {
 			console.log(e);
@@ -19,7 +45,8 @@ var AM = {};
 			console.log('connected to database :: ' + dbName);
 		}
 	});
-	AM.accounts = AM.db.collection('accounts');
+	*/
+	
 
 module.exports = AM;
 
